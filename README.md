@@ -1,117 +1,118 @@
-# aws-data-engineering-project
+# AWS Data Engineering Project
 
-## 📂 Dataset
+## Overview
 
-This project uses a synthetic e-commerce dataset created for learning and demonstration purposes.
+This repository showcases an **end-to-end AWS-based data engineering pipeline** designed using modern, industry-standard tools. The project simulates how raw data is ingested, processed, transformed, and modeled into analytics-ready datasets for downstream reporting and analysis.
 
-### Files
-- orders.csv – transactional order data
-- customers.json – customer master data
-- products.csv – product catalog
-
-
-
-## 📌 Overview
-
-This project demonstrates a **production-style, cloud-native data engineering platform** designed using modern industry tools and best practices.
-
-The pipeline supports **batch ingestion, API-based ingestion, and event-driven processing**, similar to real-world enterprise data platforms used for analytics and reporting.
-
-All components are built using **personal cloud accounts and free-tier compatible services**, making this project fully reproducible, ethical, and interview-safe.
+The focus of this project is **clarity of architecture, modular design, and production-oriented thinking**, rather than just writing scripts.
 
 ---
 
-## 🧠 Business Use Case
+## Architecture
 
-An **E-commerce Analytics Platform** that enables:
-
-- Sales and revenue analysis  
-- Customer behavior tracking  
-- Product performance reporting  
-- Near real-time ingestion of newly arrived data  
+![Architecture Diagram](diagrams/architecture_diagram.png)
 
 ---
 
-## 🏗️ High-Level Architecture
+## End-to-End Data Flow
 
-![Architecture Diagram](diagrams/architecture_diagram.png,pipeline.png)
-
----
-
-## 🔄 Data Ingestion Patterns
-
-### 1️⃣ Batch Ingestion
-- CSV files uploaded to Amazon S3
-- Orchestrated using **Apache Airflow**
-
-### 2️⃣ API-Based Ingestion
-- Public REST API data ingested using Python
-- Stored in Amazon S3 as raw JSON
-
-### 3️⃣ Event-Driven Ingestion
-- S3 object upload triggers **AWS Lambda**
-- Lambda automatically starts **AWS Glue ETL jobs**
+1. Data is ingested from an external source using a Python-based ingestion script
+2. Raw data is stored in **Amazon S3**
+3. **S3 events trigger AWS Lambda** for orchestration
+4. **AWS Glue** performs ETL processing and transformations
+5. Transformed data is loaded into **Snowflake** using staging and COPY commands
+6. **dbt** builds staging and mart-level models for analytics
+7. **Apache Airflow** orchestrates and schedules the pipeline
+8. **SNS and DLQ** handle alerts and failure scenarios
 
 ---
 
-## 🧰 Technology Stack
+## Tech Stack
 
-| Layer | Technology |
-|-----|-----------|
-Data Sources | CSV Files, Public REST APIs, JSON |
-Storage | Amazon S3 |
-Event Trigger | AWS Lambda |
-ETL Processing | AWS Glue (PySpark) |
-Orchestration | Apache Airflow |
-Alerting | Amazon SNS |
-Failure Handling | Amazon SQS (DLQ) |
-Warehouse | Snowflake |
-Transformations | dbt |
-Data Format | Parquet |
+* **Cloud Platform:** AWS (S3, Lambda, Glue, SNS)
+* **Orchestration:** Apache Airflow
+* **Data Warehouse:** Snowflake
+* **Transformation Layer:** dbt
+* **Languages:** Python, SQL
+* **Version Control:** Git, GitHub
+* **CI/CD:** GitHub Actions
 
 ---
 
-## 📂 Repository Structure
+## Project Structure
 
-```text
+```
 aws-data-engineering-project/
-│
-├── ingestion/
-│   └── API_to_s3.py
-│
-├── lambda/
-│   └── S3_trigger_lambda.py
-│
-├── glue/
-│   └── ecommerce_glue_job.py
-│
-├── airflow/
-│   └── dags/
-│       └── ecommerce_pipeline_dag.py
-│
-├── snowflake/
-│   ├── create_tables.sql
-│   └── stage_and_copy.sql
-│
-├── dbt/
-│   ├── dbt_project.yml
-│   └── models/
-│       ├── staging/
-│       │   ├── stg_orders.sql
-│       │   └── stg_customers.sql
-│       └── marts/
-│           ├── fact_orders.sql
-│           └── dim_customers.sql
-│
-├── datasets/
-│   ├── customers.csv
-│   ├── orders.csv
-│   └── products.csv
-│
-├── diagrams/
-│   └── architecture_diagram.png
-|   |__ pipeline.png
-│
-├── SNS.md
-├── DLQ_flow.md
+├── ingestion/            # API ingestion scripts
+├── lambda/               # AWS Lambda functions
+├── glue/                 # AWS Glue ETL jobs
+├── airflow/dags/         # Airflow DAGs
+├── snowflake/            # Snowflake DDL & COPY scripts
+├── dbt/                  # dbt project and models
+│   ├── models/
+│   │   ├── staging/      # Source-aligned models
+│   │   └── marts/        # Business-level models
+├── datasets/             # Sample datasets
+├── diagrams/             # Architecture diagrams
+├── SNS.md                # Notification flow
+├── DLQ_flow.md           # Failure handling design
 └── README.md
+```
+
+---
+
+## dbt Modeling Approach
+
+### Staging Layer
+
+* One-to-one mapping with source tables
+* Light transformations only (casting, renaming, filtering)
+* Naming convention: `stg_<source>_<entity>`
+
+### Mart Layer
+
+* Business-ready fact and dimension tables
+* Optimized for analytics and reporting
+* Naming convention:
+
+  * Facts: `fact_<business_process>`
+  * Dimensions: `dim_<entity>`
+
+---
+
+## Data Quality & Testing
+
+The project includes **dbt tests** to ensure:
+
+* Primary keys are unique
+* Mandatory fields are not null
+* Referential integrity between fact and dimension tables
+
+---
+
+## CI/CD
+
+A lightweight **GitHub Actions CI pipeline** validates:
+
+* Python syntax
+* Repository structure
+* SQL/dbt model presence
+
+This ensures consistent quality without executing cloud resources.
+
+---
+
+## Future Enhancements
+
+* dbt snapshots and incremental models
+* Data quality checks with dbt-expectations
+* Terraform for AWS infrastructure
+* Cost optimization strategies for Snowflake
+
+---
+
+## Author
+
+**Arpan Hazra**
+Data Engineer | AWS | Snowflake | dbt
+GitHub: [https://github.com/Arpan237](https://github.com/Arpan237)
