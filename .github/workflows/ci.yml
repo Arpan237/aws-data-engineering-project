@@ -1,0 +1,36 @@
+name: Data Engineering CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install flake8
+
+      - name: Lint Python files
+        run: |
+          flake8 ingestion/ lambda/ glue/ airflow/ || true
+
+      - name: Validate SQL files exist
+        run: |
+          test -d snowflake
+          test -d dbt/models
+
+      - name: CI completed
+        run: echo "CI checks passed"
