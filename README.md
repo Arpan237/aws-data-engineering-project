@@ -63,42 +63,6 @@ Warehouse	: Snowflake
 Transformations : dbt
 Data Format	: Parquet
 
-## Repository Structure
-aws-data-engineering-project/
-│
-├── airflow/
-│   └── dags/
-│       └── ecommerce_pipeline_dag.py
-│
-├── glue/
-│   └── ecommerce_glue_job.py
-│
-├── lambda/
-│   └── s3_trigger_lambda.py
-│
-├── ingestion/
-│   └── api_ingestion.py
-│
-├── snowflake/
-│   ├── create_tables.sql
-│   └── stage_and_copy.sql
-│
-├── dbt/
-│   ├── dbt_project.yml
-│   └── models/
-│       ├── staging/
-│       ├── marts/
-│       │   ├── dim_customers.sql
-│       │   └── fct_orders.sql
-│
-├── datasets/
-│   ├── customers.csv
-│   └── orders.csv
-│
-├── diagrams/
-│   └── architecture.png
-│
-└── README.md
 
 ## End-to-End Pipeline Execution Flow
 🔹 Step 1: Data Ingestion
