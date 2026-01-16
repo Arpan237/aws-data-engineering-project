@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: fact_orders
+    description: "Orders fact"
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+
+  - name: dim_customers
+    description: "Customers dimension"
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
