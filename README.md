@@ -10,109 +10,108 @@ This project uses a synthetic e-commerce dataset created for learning and demons
 - products.csv – product catalog
 
 
-# Overview
 
-This project demonstrates a production-grade, cloud-native data engineering platform designed using modern industry tools and best practices.
-It supports batch processing, API ingestion, and event-driven pipelines, similar to real-world enterprise data platforms.
+## 📌 Overview
 
-The project is built entirely using personal/free-tier compatible cloud services, making it realistic, truthful, and interview-safe.
+This project demonstrates a **production-style, cloud-native data engineering platform** designed using modern industry tools and best practices.
 
-# Business Use Case
+The pipeline supports **batch ingestion, API-based ingestion, and event-driven processing**, similar to real-world enterprise data platforms used for analytics and reporting.
 
-An E-commerce Analytics Platform that enables:
+All components are built using **personal cloud accounts and free-tier compatible services**, making this project fully reproducible, ethical, and interview-safe.
 
-Sales and revenue reporting
+---
 
-Customer behavior analysis
+## 🧠 Business Use Case
 
-Product performance insights
+An **E-commerce Analytics Platform** that enables:
 
-Near real-time ingestion of new data files
+- Sales and revenue analysis  
+- Customer behavior tracking  
+- Product performance reporting  
+- Near real-time ingestion of newly arrived data  
 
-# High-Level Architecture
+---
 
-## Data Ingestion Patterns
-## Batch Ingestion (Scheduled)
+## 🏗️ High-Level Architecture
 
-CSV files uploaded to S3
+![Architecture Diagram](diagrams/architecture_diagram.png,pipeline.png)
 
-Triggered daily using Apache Airflow
+---
 
-## API-Based Ingestion
+## 🔄 Data Ingestion Patterns
 
-Public REST API data fetched using Python
+### 1️⃣ Batch Ingestion
+- CSV files uploaded to Amazon S3
+- Orchestrated using **Apache Airflow**
 
-Stored as raw JSON in S3
+### 2️⃣ API-Based Ingestion
+- Public REST API data ingested using Python
+- Stored in Amazon S3 as raw JSON
 
-## Event-Driven Ingestion
+### 3️⃣ Event-Driven Ingestion
+- S3 object upload triggers **AWS Lambda**
+- Lambda automatically starts **AWS Glue ETL jobs**
 
-S3 object arrival triggers AWS Lambda
+---
 
-Lambda triggers AWS Glue ETL job
+## 🧰 Technology Stack
 
-## Technology Stack
+| Layer | Technology |
+|-----|-----------|
+Data Sources | CSV Files, Public REST APIs |
+Storage | Amazon S3 |
+Event Trigger | AWS Lambda |
+ETL Processing | AWS Glue (PySpark) |
+Orchestration | Apache Airflow |
+Alerting | Amazon SNS |
+Failure Handling | Amazon SQS (DLQ) |
+Warehouse | Snowflake |
+Transformations | dbt |
+Data Format | Parquet |
 
-Source	: CSV Files, Public REST API,JSON
-Storage	: Amazon S3
-Event   : Trigger	AWS Lambda
-ETL Processing	: AWS Glue (PySpark)
-Orchestration	: Apache Airflow
-Alerting	: Amazon SNS
-Failure Handling	: SQS Dead Letter Queue
-Warehouse	: Snowflake
-Transformations : dbt
-Data Format	: Parquet
+---
 
+## 📂 Repository Structure
 
-## End-to-End Pipeline Execution Flow
-🔹 Step 1: Data Ingestion
-
-CSV files uploaded to S3 (raw/ bucket)
-
-API data fetched via Python script and stored in S3
-
-🔹 Step 2: Event Trigger
-
-S3 upload triggers AWS Lambda
-
-Lambda starts AWS Glue ETL job
-
-🔹 Step 3: ETL Processing (Glue)
-
-Reads raw data from S3
-
-Applies schema enforcement and cleansing
-
-Writes transformed data to S3 in Parquet format
-
-🔹 Step 4: Orchestration (Airflow)
-
-Airflow DAG:
-
-Triggers Glue job (batch mode)
-
-Loads data into Snowflake
-
-Runs dbt transformations
-
-🔹 Step 5: Data Warehousing (Snowflake)
-
-External stage reads data from S3
-
-COPY command loads data into raw tables
-
-🔹 Step 6: Analytics Engineering (dbt)
-
-Staging models clean raw data
-
-Fact & dimension models created
-
-Incremental loading implemented
-
-SCD Type-2 applied for customer dimension
-
-🔹 Step 7: Monitoring & Alerts
-
-Success and failure notifications via SNS
-
-Lambda failures routed to SQS DLQ
+```text
+aws-data-engineering-project/
+│
+├── ingestion/
+│   └── API_to_s3.py
+│
+├── lambda/
+│   └── S3_trigger_lambda.py
+│
+├── glue/
+│   └── ecommerce_glue_job.py
+│
+├── airflow/
+│   └── dags/
+│       └── ecommerce_pipeline_dag.py
+│
+├── snowflake/
+│   ├── create_tables.sql
+│   └── stage_and_copy.sql
+│
+├── dbt/
+│   ├── dbt_project.yml
+│   └── models/
+│       ├── staging/
+│       │   ├── stg_orders.sql
+│       │   └── stg_customers.sql
+│       └── marts/
+│           ├── fact_orders.sql
+│           └── dim_customers.sql
+│
+├── datasets/
+│   ├── customers.csv
+│   ├── orders.csv
+│   └── products.csv
+│
+├── diagrams/
+│   └── architecture_diagram.png
+|   |__ pipeline.png
+│
+├── SNS.md
+├── DLQ_flow.md
+└── README.md
