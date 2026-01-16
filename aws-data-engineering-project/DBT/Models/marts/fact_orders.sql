@@ -4,15 +4,14 @@
 ) }}
 
 select
-    o.order_id,
-    o.customer_id,
-    o.product_id,
-    o.order_date,
-    o.amount
-from {{ ref('stg_orders') }} o
+    order_id,
+    customer_id,
+    order_date,
+    order_amount,
+    order_status,
+    created_at
+from {{ ref('stg_orders') }}
 
 {% if is_incremental() %}
-where o.order_date > (
-    select max(order_date) from {{ this }}
-)
+where created_at > (select max(created_at) from {{ this }})
 {% endif %}
