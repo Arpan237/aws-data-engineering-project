@@ -17,43 +17,50 @@ default_args = {
 with DAG(
     dag_id="ecommerce_data_pipeline",
     default_args=default_args,
-    description="End-to-end pipeline: Glue → Snowflake → dbt",
+    description="End-to-end pipeline: API → S3 → Glue → Snowflake → dbt",
     schedule_interval="@daily",
     start_date=datetime(2026, 1, 10),
     catchup=False,
     tags=["ecommerce", "aws", "snowflake", "dbt"],
 ) as dag:
 
-# API Ingestion
+    # API Ingestion (optional if Lambda handles it)
     api_ingestion = BashOperator(
         task_id="api_to_s3",
         bash_command="python /ingestion/api_to_s3.py"
     )
-# Run glue ETL job
-    glue_etl = AwsGlueJobOperator(
+
+    # Run Glue ETL job
+    glue_etl = GlueJobOperator(
         task_id="glue_etl",
         job_name="ecommerce-glue-job",
+        script_args={
+            "--S3_RAW_PATH": "s3://ecommerce-data-lake/raw/api/products/",
+            "--S3_CURATED_PATH": "s3://ecommerce-data-lake/curated/products/"
+        },
         region_name="us-east-1"
     )
 
-# LOAD INTO SNOWFLAKE (COPY command)
+    # Load into Snowflake (COPY command)
     snowflake_copy_raw = SnowflakeOperator(
-        task_id="snowflake_copy_raw_data",
+        task_id="snowflake_copy_raw",
         snowflake_conn_id="snowflake_default",
         sql="snowflake/copy_into_tables.sql"
     )
- # DBT run
+
+    # dbt run
     dbt_run = BashOperator(
         task_id="dbt_run",
         bash_command="cd /dbt && dbt run"
     )
-# DBT test 
+
+    # dbt test
     dbt_test = BashOperator(
         task_id="dbt_test",
         bash_command="cd /dbt && dbt test"
     )
 
-# OPTIONAL: REFRESH EXTERNAL TABLES
+    # Optional: refresh external tables
     refresh_external = SnowflakeOperator(
         task_id="refresh_snowflake_external",
         snowflake_conn_id="snowflake_default",
@@ -64,5 +71,5 @@ with DAG(
         """
     )
 
-
-    api_ingestion >> glue_etl >> snowflake_copy_raw_data >> dbt_run >> dbt_test >> refresh_snowflake_external
+    # Dependency chain
+    api_ingestion >> glue_etl >> snowflake_copy_raw >> dbt_run >> dbt_test >> refresh_external
