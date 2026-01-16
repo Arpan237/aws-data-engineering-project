@@ -10,7 +10,7 @@ The focus of this project is **clarity of architecture, modular design, and prod
 
 ## Architecture
 
-![Architecture Diagram](diagrams/architecture_diagram.png)
+![Architecture Diagram](architecture_diagram/architecture_diagram.png)
 
 ---
 
