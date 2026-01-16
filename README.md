@@ -6,12 +6,6 @@ This repository showcases an **end-to-end AWS-based data engineering pipeline** 
 
 The focus of this project is **clarity of architecture, modular design, and production-oriented thinking**, rather than just writing scripts.
 
----
-
-## Architecture
-
-![Architecture Diagram](aws-data-engineering-project
-/Architecture_diagram/architecture_diagram.png)
 
 ---
 
