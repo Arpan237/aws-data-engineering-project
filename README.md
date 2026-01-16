@@ -58,7 +58,7 @@ An **E-commerce Analytics Platform** that enables:
 
 | Layer | Technology |
 |-----|-----------|
-Data Sources | CSV Files, Public REST APIs |
+Data Sources | CSV Files, Public REST APIs, JSON |
 Storage | Amazon S3 |
 Event Trigger | AWS Lambda |
 ETL Processing | AWS Glue (PySpark) |
