@@ -114,5 +114,6 @@ This ensures consistent quality without executing cloud resources.
 ## Author
 
 **Arpan Hazra**
-Data Engineer | AWS | Snowflake | dbt
+Data Engineer | AWS | Snowflake | DBT | SQL | Airflow
+
 GitHub: [https://github.com/Arpan237](https://github.com/Arpan237)
